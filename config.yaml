@@ -1,0 +1,17 @@
+credentials:
+  usernames:
+    joaocampos:
+      email: joaocampos@teste.com
+      logged_in: False
+      name: Joao Campos
+      password: joaocampos
+      eduardosantos:
+        email: eduardosantos@teste.com
+        logged_in: False
+        name: Eduardo Santos
+        password: eduardosantos
+
+cookie:
+  expiry_days: 1
+  key: tanto_faz_key
+  name: tanto_faz_name
