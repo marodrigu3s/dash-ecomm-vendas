@@ -21,7 +21,7 @@ st.markdown(
     }
 </style>
 """,
-    unsafe_allow_html=False,
+    unsafe_allow_html=True,
 )
 
 valor = 0
