@@ -96,12 +96,12 @@ def dashboard():
                 st.dataframe(filtered, hide_index=True)
 
         with st.container():
-            metricaAtraso = ((float(dfMetrica['num_NotaAtrasoEnvio']) * 100) - 100) * -1
-            metricaReclamacao = ((float(dfMetrica['num_NotaReclamacao']) * 100) - 100) * -1
-            metricaCancelamento = ((float(dfMetrica['num_NotaCancelamento']) * 100) - 100) * -1
-            metricaComercial = int(dfMetricaTempoResp['num_HoraUtil']) / 60
-            metricaForaComercial = int(dfMetricaTempoResp['num_HoraExtra']) / 60
-            metricaFDS = int(dfMetricaTempoResp['num_HoraFDS']) / 60
+            metricaAtraso = ((dfMetrica['num_NotaAtrasoEnvio'].iloc[0] * 100) - 100) * -1
+            metricaReclamacao = ((dfMetrica['num_NotaReclamacao'].iloc[0] * 100) - 100) * -1
+            metricaCancelamento = ((dfMetrica['num_NotaCancelamento'].iloc[0] * 100) - 100) * -1
+            metricaComercial = dfMetricaTempoResp['num_HoraUtil'].iloc[0] / 60
+            metricaForaComercial = dfMetricaTempoResp['num_HoraExtra'].iloc[0] / 60
+            metricaFDS = dfMetricaTempoResp['num_HoraFDS'].iloc[0] / 60
             fig1 = go.Figure(go.Indicator(
                 mode="number+gauge+delta",
                 value=metricaAtraso,
