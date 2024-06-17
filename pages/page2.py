@@ -30,7 +30,7 @@ app = hy.HydraApp(title='outro gato')
 
 @app.addapp(icon="📈")
 def Dashboard():
-    st.switch_page('pages/Home.py')
+    st.switch_page('pages/ResumoVendas.py')
 @app.addapp(icon="📄")
 def Detalhado():
     st.switch_page('Detalhado.py')
