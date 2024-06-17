@@ -13,6 +13,7 @@ st.set_page_config(
     layout='wide'
     ,initial_sidebar_state="collapsed"
     ,page_title='Dashboard'
+    ,page_icon="📈"
 )
 
 st.markdown(
@@ -23,7 +24,7 @@ st.markdown(
     }
 </style>
 """,
-    unsafe_allow_html=False,
+    unsafe_allow_html=True,
 )
 
 
@@ -61,9 +62,9 @@ def dashboard():
     filtered = df
     with aba1:
         st.markdown('''
-            ## Resumo de Vendas Ecommerce
-            Dados dos últimos 30 dias.
-            ''')
+                ## Resumo de Vendas Ecommerce
+                Dados dos últimos 30 dias.
+                ''')
 
         # st.title('Vendas Ecommerce')
         # st.subheader('Dados dos últimos 30 dias')
@@ -72,8 +73,11 @@ def dashboard():
         col_Card1, col_Card2, col_Card3 = st.columns(3)
         with st.container():
             valorPedido = 'R$ ' + locale.format_string('%.2f', filtered['vlr_TotalPago'].sum(), grouping=True)
-            valorPedidoDia = 'R$ ' + locale.format_string('%.2f',filtered[filtered['dat_Criacao'] == filtered['dat_Criacao'].max()]['vlr_TotalPago'].sum(), grouping=True)
-            valorTicketMedio = 'R$ ' + locale.format_string('%.2f',filtered[filtered['dat_Criacao'] > filtered['dat_Criacao'].max() - pd.Timedelta(days=30)]['vlr_TotalPago'].mean(), grouping=True)
+            valorPedidoDia = 'R$ ' + locale.format_string('%.2f', filtered[
+                filtered['dat_Criacao'] == filtered['dat_Criacao'].max()]['vlr_TotalPago'].sum(), grouping=True)
+            valorTicketMedio = 'R$ ' + locale.format_string('%.2f', filtered[
+                filtered['dat_Criacao'] > filtered['dat_Criacao'].max() - pd.Timedelta(days=30)][
+                'vlr_TotalPago'].mean(), grouping=True)
 
             col_Card1.metric(label='Valor Pedidos', value=valorPedido)
             col_Card2.metric(label='Valor Pedidos Dia', value=valorPedidoDia)
@@ -81,11 +85,13 @@ def dashboard():
 
         with st.container():
             c1, c2 = st.columns((1, 3))
-            #Card1, Card2, Card3 = st.columns(3)
+            # Card1, Card2, Card3 = st.columns(3)
             quantidadePedido = '{:,}'.format(filtered['id_Pedido'].count())
-            quantidadeAguardandoEnvio = '{:,}'.format(filtered[filtered['nom_StatusEnvio'] == 'READY_TO_SHIP']['id_Pedido'].count())
-            quantidadeAtrasados = '{:,}'.format(filtered[(filtered['num_DiasAtraso'] > 0) & (filtered['dat_PrevisaoEnvio'] == 'READY_TO_SHIP')]['id_Pedido'].count())
-
+            quantidadeAguardandoEnvio = '{:,}'.format(
+                filtered[filtered['nom_StatusEnvio'] == 'READY_TO_SHIP']['id_Pedido'].count())
+            quantidadeAtrasados = '{:,}'.format(
+                filtered[(filtered['num_DiasAtraso'] > 0) & (filtered['dat_PrevisaoEnvio'] == 'READY_TO_SHIP')][
+                    'id_Pedido'].count())
 
             with c1:
                 st.metric(label='Pedidos do Dia', value=quantidadePedido)
@@ -97,21 +103,21 @@ def dashboard():
 
         with st.container():
             metricaAtraso = ((dfMetrica['num_NotaAtrasoEnvio'].iloc[0] * 100) - 100) * -1
-            metricaReclamacao = ((dfMetrica['num_NotaReclamacao'].iloc[0] * 100) - 100) * -1
-            metricaCancelamento = ((dfMetrica['num_NotaCancelamento'].iloc[0] * 100) - 100) * -1
+            metricaReclamacao = ((dfMetrica['num_NotaReclamacao'] * 100) - 100) * -1
+            metricaCancelamento = ((dfMetrica['num_NotaCancelamento'] * 100) - 100) * -1
             metricaComercial = dfMetricaTempoResp['num_HoraUtil'].iloc[0] / 60
             metricaForaComercial = dfMetricaTempoResp['num_HoraExtra'].iloc[0] / 60
             metricaFDS = dfMetricaTempoResp['num_HoraFDS'].iloc[0] / 60
             fig1 = go.Figure(go.Indicator(
                 mode="number+gauge+delta",
-                value=metricaAtraso,
-                #delta={'reference': 50},
+                value=float(metricaAtraso),
+                # delta={'reference': 50},
                 domain={'x': [0, 1], 'y': [0, 1]},
                 gauge={
                     'threshold': {
                         'line': {'color': "black", 'width': 2},
                         'thickness': 0.75,
-                        'value': metricaAtraso},
+                        'value': float(metricaAtraso)},
                     'shape': "bullet",
                     'axis': {'range': [None, 100]},
                     'steps': [
@@ -125,14 +131,14 @@ def dashboard():
             fig1.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
             fig2 = go.Figure(go.Indicator(
                 mode="number+gauge+delta",
-                value=metricaReclamacao,
-                #delta={'reference': 50},
+                value=float(metricaReclamacao),
+                # delta={'reference': 50},
                 domain={'x': [0, 1], 'y': [0, 1]},
                 gauge={
                     'threshold': {
                         'line': {'color': "black", 'width': 2},
                         'thickness': 0.75,
-                        'value': metricaReclamacao},
+                        'value': float(metricaReclamacao)},
                     'shape': "bullet",
                     'axis': {'range': [None, 100]},
                     'steps': [
@@ -146,14 +152,14 @@ def dashboard():
             fig2.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
             fig3 = go.Figure(go.Indicator(
                 mode="number+gauge+delta",
-                value=metricaCancelamento,
-                #delta={'reference': 50},
+                value=float(metricaCancelamento),
+                # delta={'reference': 50},
                 domain={'x': [0, 1], 'y': [0, 1]},
                 gauge={
                     'threshold': {
                         'line': {'color': "black", 'width': 2},
                         'thickness': 0.75,
-                        'value': metricaCancelamento},
+                        'value': float(metricaCancelamento)},
                     'shape': "bullet",
                     'axis': {'range': [None, 100]},
                     'steps': [
@@ -254,23 +260,24 @@ def dashboard():
         with st.container():
             c1, c2, c3, c4, c5, c6 = st.columns(6)
             with c1:
-                cardValorComissao = 'R$ ' + locale.format_string('%.2f',filtered['vlr_Comissao'].sum(),grouping=True)
+                cardValorComissao = 'R$ ' + locale.format_string('%.2f', filtered['vlr_Comissao'].sum(), grouping=True)
                 st.metric(label='Valor Comissão', value=cardValorComissao)
             with c2:
-                cardValorImpostos = 'R$ ' + locale.format_string('%.2f',0,grouping=True) #filtered['vlr_Comissao'].sum()
+                cardValorImpostos = 'R$ ' + locale.format_string('%.2f', 0,
+                                                                 grouping=True)  # filtered['vlr_Comissao'].sum()
                 st.metric(label='Valor Impostos', value=cardValorImpostos)
             with c3:
                 cardPercentualaMargem = filtered['perc_MargemVenda'].mean()
                 cardPercentualaMargem = '{:.2%}'.format(cardPercentualaMargem * 100)
                 st.metric(label='% Margem', value=cardPercentualaMargem)
             with c4:
-                cardValorFrete = 'R$ ' + locale.format_string('%.2f',filtered['vlr_FreteFinal'].sum(),grouping=True)
+                cardValorFrete = 'R$ ' + locale.format_string('%.2f', filtered['vlr_FreteFinal'].sum(), grouping=True)
                 st.metric(label='Valor Frete', value=cardValorFrete)
             with c5:
                 cardQuantidadeDevolucao = '{:,}'.format(filtered['id_Mediacao'].nunique())
                 st.metric(label='Qtd Devolução', value=cardQuantidadeDevolucao)
             with c6:
-                carValorDevolucao = 'R$ ' + locale.format_string('%.2f',filtered['vlr_Devolucao'].sum(),grouping=True)
+                carValorDevolucao = 'R$ ' + locale.format_string('%.2f', filtered['vlr_Devolucao'].sum(), grouping=True)
                 st.metric(label='Valor Devolução', value=carValorDevolucao)
             with st.container():
                 c1, c2, c3, c4 = st.columns(4)
@@ -278,17 +285,20 @@ def dashboard():
                     cardTotalVisita = '{:,}'.format(dfVisita['num_TotalVisita'].sum())
                     st.metric(label='Total Visitas', value=cardTotalVisita)
                 with c2:
-                    cardConversaoVenda = '{:.2%}'.format(filtered['id_Pedido'].count() / dfVisita['num_TotalVisita'].sum())
+                    cardConversaoVenda = '{:.2%}'.format(
+                        filtered['id_Pedido'].count() / dfVisita['num_TotalVisita'].sum())
                     st.metric(label='Conversão Vendas', value=cardConversaoVenda)
                 with c3:
                     cardPosVenda = '{:,}'.format(dfPosVenda['qtd_MSG'].iloc[0])
                     st.metric(label='Msg Pós Vendas', value=cardPosVenda)
                 with c4:
-                    cardAguardandoResp = '{:,}'.format(dfPergunta[dfPergunta['nom_Status'] == 'UNANSWERED']['id_Vendedor'].count())
+                    cardAguardandoResp = '{:,}'.format(
+                        dfPergunta[dfPergunta['nom_Status'] == 'UNANSWERED']['id_Vendedor'].count())
                     st.metric(label='Aguardando Resp.', value=cardAguardandoResp)
 
     with aba2:
-            st.dataframe(filtered)
+        st.dataframe(filtered)
+
 
 if __name__ == '__main__':
     dashboard()

@@ -80,7 +80,7 @@ df = pd.read_sql(query, sqlConn)
 
 
 queryMetrica = '''
-    select * from stg_NotaMetrica
+    select * from fato_NotaMetrica
     '''
 
 dfMetrica = pd.read_sql(queryMetrica, sqlConn)
