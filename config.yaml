@@ -5,11 +5,11 @@ credentials:
       logged_in: False
       name: Joao Campos
       password: joaocampos
-      eduardosantos:
-        email: eduardosantos@teste.com
-        logged_in: False
-        name: Eduardo Santos
-        password: eduardosantos
+    eduardosantos:
+      email: eduardosantos@teste.com
+      logged_in: False
+      name: Eduardo Santos
+      password: eduardosantos
 
 cookie:
   expiry_days: 1

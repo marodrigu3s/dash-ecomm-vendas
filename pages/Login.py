@@ -3,28 +3,34 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
 from yaml import SafeLoader
+import toml
 
 # conteudo
 from pages.ResumoVendas import dashboard
 
-st.set_page_config(
-            layout="wide"
-            ,page_title='AMS - Dashboard'
-            ,initial_sidebar_state="collapsed"
-        )
+#st.set_page_config(
+#            layout="centered"
+#            ,page_title='AMS - Dashboard'
+#            ,initial_sidebar_state="collapsed"
+#        )
 
-st.markdown(
-            """
-        <style>
-            [data-testid="collapsedControl"] {
-                display: none
-            }
-        </style>
-        """,
-            unsafe_allow_html=True,
-        )
+with open('style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+#st.markdown(
+#    """
+#<style>
+#    [data-testid="collapsedControl"] {
+#        display: none
+#    }
+#</style>
+#""",
+#    unsafe_allow_html=True,
+#)
+
 
 #st_autorefresh(interval=30000, limit=None, key="fizzbuzzcounter")
+
 
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)

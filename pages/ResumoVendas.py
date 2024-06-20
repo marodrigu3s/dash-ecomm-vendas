@@ -8,25 +8,7 @@ from streamlit_card import card
 import yaml
 from yaml import SafeLoader
 import streamlit_authenticator as stauth
-
-st.set_page_config(
-    layout='wide'
-    ,initial_sidebar_state="collapsed"
-    ,page_title='Dashboard'
-    ,page_icon="📈"
-)
-
-st.markdown(
-    """
-<style>
-    [data-testid="collapsedControl"] {
-        display: none
-    }
-</style>
-""",
-    unsafe_allow_html=True,
-)
-
+import toml
 
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -79,6 +61,7 @@ def dashboard():
                 filtered['dat_Criacao'] > filtered['dat_Criacao'].max() - pd.Timedelta(days=30)][
                 'vlr_TotalPago'].mean(), grouping=True)
 
+            #
             col_Card1.metric(label='Valor Pedidos', value=valorPedido)
             col_Card2.metric(label='Valor Pedidos Dia', value=valorPedidoDia)
             col_Card3.metric(label='Ticket Médio', value=valorTicketMedio)
@@ -289,7 +272,10 @@ def dashboard():
                         filtered['id_Pedido'].count() / dfVisita['num_TotalVisita'].sum())
                     st.metric(label='Conversão Vendas', value=cardConversaoVenda)
                 with c3:
-                    cardPosVenda = '{:,}'.format(dfPosVenda['qtd_MSG'].iloc[0])
+                    try:
+                        cardPosVenda = '{:,}'.format(dfPosVenda['qtd_MSG'].sum())
+                    except:
+                        cardPosVenda = 0
                     st.metric(label='Msg Pós Vendas', value=cardPosVenda)
                 with c4:
                     cardAguardandoResp = '{:,}'.format(

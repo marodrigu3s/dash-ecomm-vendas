@@ -1,18 +1,13 @@
 import streamlit as st
+import toml
 
+st.set_page_config(page_title='Bem-Vindo', page_icon='☀', layout="centered", initial_sidebar_state="collapsed", menu_items=None)
 
-st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="collapsed", menu_items=None)
+with open('config.toml') as thm:
+    theme = toml.load(thm)
 
-st.markdown(
-    """
-<style>
-    [data-testid="collapsedControl"] {
-        display: none
-    }
-</style>
-""",
-    unsafe_allow_html=True,
-)
+with open('style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 st.markdown("""<div markdown="1" style='text-align: center;'>
 
@@ -52,7 +47,7 @@ button {
     height: auto;
     padding-top: 10px !important;
     padding-bottom: 10px !important;
-    width: 100px;
+    width: 100px;q
     align: center;
 }
 </style>
