@@ -1,6 +1,11 @@
 .element-container.st-emotion-cache-ycge2a.e1f1d6gn4 {
-    background-color: #ff0000;
-    border: 2px;
+    background-color: #F63366;
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 0px;
+    border-radius: 5px;
+    text-align: center;
+    text-color: #ffffff;
 }
 
 [data-testid="collapsedControl"] {

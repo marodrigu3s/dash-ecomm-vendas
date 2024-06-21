@@ -1,17 +1,17 @@
 import streamlit as st
 import toml
+PAGE_ICON = ":wave:"
+st.set_page_config(page_title='Bem-Vindo', page_icon=PAGE_ICON, layout="centered", initial_sidebar_state="collapsed", menu_items=None)
 
-st.set_page_config(page_title='Bem-Vindo', page_icon='☀', layout="centered", initial_sidebar_state="collapsed", menu_items=None)
 
-with open('config.toml') as thm:
-    theme = toml.load(thm)
+toml.load('.streamlit/config.toml')
 
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-st.markdown("""<div markdown="1" style='text-align: center;'>
+st.markdown(f"""<div markdown="1" style='text-align: center;'>
 
-## Bem-Vindo ao Portal de Dashboards
+## Bem-Vindo ao Portal de Dashboards 
 
 Seja bem-vindo ao nosso portal de dashboards, onde você terá acesso a informações e análises detalhadas para tomar decisões estratégicas de forma rápida e eficiente.
 
