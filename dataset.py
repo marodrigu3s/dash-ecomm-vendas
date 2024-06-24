@@ -5,7 +5,7 @@ from datetime import datetime
 sqlOptions = (
             'DRIVER={ODBC Driver 18 for SQL Server};'
             'SERVER=75.101.154.23;'
-            'DATABASE=amz_ams;'
+            'DATABASE=amz_renault;'
             'UID=sa;'
             'PWD=wU#DjES!I3k@j?ZW9ZJ;'
             'TrustedServerCertificate=yes;'
@@ -68,7 +68,7 @@ query = '''
         ,vlr_TotalPago - ( (vlr_Comissao + 0 + 0) - vlr_CustoEnvio) AS vlr_Liquido
         ,CASE
         WHEN t.SUM_vlr_Valor = 0 THEN 0.12
-        ELSE ((vlr_TotalPago - ( (vlr_Comissao + 0 + 0) - vlr_CustoEnvio))/ t.SUM_vlr_Valor)
+        ELSE ((vlr_TotalPago - ( (vlr_Comissao + 0 + 0) - vlr_CustoEnvio))/ t.SUM_vlr_Valor) * 100
         END AS perc_MargemVenda
     FROM
         fato_Venda f
@@ -78,6 +78,33 @@ query = '''
 
 df = pd.read_sql(query, sqlConn)
 
+
+def kpi_icon(current_value):
+    if current_value >= 0.12:
+        return f"🟢 {current_value:.2%}"
+    elif 0.08 <= current_value < 0.12:
+        return f"🟡 {current_value:.2%}"
+    else:
+        return f"🔴 {current_value:.2%}"
+
+dfTop10 = pd.DataFrame(df,
+                       columns=['dat_Criacao', 'id_PedidoFinal', 'vlr_TotalPago', 'vlr_FreteFinal', 'vlr_Liquido',
+                                'perc_MargemVenda'])
+
+for col in dfTop10.columns:
+    if col.startswith('vlr_'):
+        dfTop10[col] = dfTop10[col].apply(lambda x: f"{x:,.2f}")
+
+dfTop10 = dfTop10.sort_values(by='dat_Criacao', ascending=False).head(10).rename(
+    columns={'dat_Criacao':'Data'
+     ,'id_PedidoFinal': 'Pedido'
+    ,'vlr_TotalPago': 'Venda'
+    ,'vlr_FreteFinal': 'Frete'
+    ,'vlr_Liquido':'Líq. ML'
+    ,'perc_MargemVenda':'%'
+     })
+
+dfTop10['%'] = dfTop10['%'].apply(kpi_icon)
 
 queryMetrica = '''
     select * from fato_NotaMetrica

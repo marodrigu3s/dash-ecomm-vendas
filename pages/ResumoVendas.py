@@ -1,34 +1,41 @@
 import streamlit as st
 import pandas as pd
-from dataset import df, dfMetrica, dfMetricaTempoResp, dfVisita, dfPosVenda, dfPergunta
+from dataset import df, dfMetrica, dfMetricaTempoResp, dfVisita, dfPosVenda, dfPergunta, dfTop10
 from utils import locale
 import plotly.express as px
 import plotly.graph_objects as go
+from streamlit.components.v1 import html
 from streamlit_card import card
 import yaml
 from yaml import SafeLoader
 import streamlit_authenticator as stauth
 import toml
 
-with open('config.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
-authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
-)
+#with open('style.css') as f:
+#    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+#with open('./config.yaml') as file:
+#    config = yaml.load(file, Loader=SafeLoader)
+#authenticator = stauth.Authenticate(
+#    config['credentials'],
+#    config['cookie']['name'],
+#    config['cookie']['key'],
+#    config['cookie']['expiry_days'],
+#)
+
+
+
 
 def dashboard():
     # st.title('Página Inicial')
-    if st.session_state["authentication_status"]:
-        col1, col2 = st.columns((6,1))
-        with col1:
-            st.write(f'Olá *{st.session_state["name"]}*!')
-        with col2:
-            teste = authenticator.logout('Logout', 'main')
-            if teste:
-                st.switch_page('pages/Login.py')
+    #if st.session_state["authentication_status"]:
+    #    col1, col2 = st.columns((6,1))
+    #    with col1:
+    #        st.write(f'Olá *{st.session_state["name"]}*!')
+    #    with col2:
+    #        teste = authenticator.logout('Logout', 'main')
+    #        if teste:
+    #            st.switch_page('pages/Login.py')
     aba1, aba2 = st.tabs(['Resumo', 'Detalhado'])
 
     #marcas = st.multiselect(
@@ -69,7 +76,7 @@ def dashboard():
         with st.container():
             c1, c2 = st.columns((1, 3))
             # Card1, Card2, Card3 = st.columns(3)
-            quantidadePedido = '{:,}'.format(filtered['id_Pedido'].count())
+            quantidadePedido = filtered[filtered['id_Periodo'] == filtered['id_Periodo'].max()]['id_Pedido'].count()
             quantidadeAguardandoEnvio = '{:,}'.format(
                 filtered[filtered['nom_StatusEnvio'] == 'READY_TO_SHIP']['id_Pedido'].count())
             quantidadeAtrasados = '{:,}'.format(
@@ -82,7 +89,8 @@ def dashboard():
                 st.metric(label='Atrasados', value=quantidadeAtrasados)
 
             with c2:
-                st.dataframe(filtered, hide_index=True)
+                st.write("Top 10 - Vendas Recentes")
+                st.dataframe(dfTop10.style.set_sticky(axis="index"), hide_index=True,)
 
         with st.container():
             metricaAtraso = ((dfMetrica['num_NotaAtrasoEnvio'].iloc[0] * 100) - 100) * -1
@@ -91,27 +99,28 @@ def dashboard():
             metricaComercial = dfMetricaTempoResp['num_HoraUtil'].iloc[0] / 60
             metricaForaComercial = dfMetricaTempoResp['num_HoraExtra'].iloc[0] / 60
             metricaFDS = dfMetricaTempoResp['num_HoraFDS'].iloc[0] / 60
-            fig1 = go.Figure(go.Indicator(
-                mode="number+gauge+delta",
-                value=float(metricaAtraso),
-                # delta={'reference': 50},
-                domain={'x': [0, 1], 'y': [0, 1]},
-                gauge={
-                    'threshold': {
-                        'line': {'color': "black", 'width': 2},
-                        'thickness': 0.75,
-                        'value': float(metricaAtraso)},
-                    'shape': "bullet",
-                    'axis': {'range': [None, 100]},
-                    'steps': [
-                        {'range': [0, 20], 'color': "#ff4000"},
-                        {'range': [20, 40], 'color': "#ffbf00"},
-                        {'range': [40, 60], 'color': "#ffff00"},
-                        {'range': [60, 80], 'color': "#bfff00"},
-                        {'range': [80, 100], 'color': "#00ff00"}],
-                    'bar': {'color': "black"}
-                }))
-            fig1.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
+
+            #fig1 = go.Figure(go.Indicator(
+            #    mode="number+gauge+delta",
+            #    value=float(metricaAtraso),
+            #    # delta={'reference': 50},
+            #    domain={'x': [0, 1], 'y': [0, 1]},
+            #    gauge={
+            #        'threshold': {
+            #            'line': {'color': "black", 'width': 2},
+            #            'thickness': 0.75,
+            #            'value': float(metricaAtraso)},
+            #        'shape': "bullet",
+            #        'axis': {'range': [None, 100]},
+            #        'steps': [
+            #            {'range': [0, 20], 'color': "#ff4000"},
+            #            {'range': [20, 40], 'color': "#ffbf00"},
+            #            {'range': [40, 60], 'color': "#ffff00"},
+            #            {'range': [60, 80], 'color': "#bfff00"},
+            #            {'range': [80, 100], 'color': "#00ff00"}],
+            #        'bar': {'color': "black"}
+            #    }))
+            #fig1.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
             fig2 = go.Figure(go.Indicator(
                 mode="number+gauge+delta",
                 value=float(metricaReclamacao),
@@ -223,8 +232,17 @@ def dashboard():
             fig6.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
             col1, col2, col3, col4, col5, col6 = st.columns(6)
             with col1:
-                st.markdown('Atraso no Envio')
-                st.plotly_chart(fig1, use_container_width=True)
+                num_percent = f'{metricaAtraso}%'
+                #print(num_percent)
+                st.html(f'''
+                            <div class="outer-wrapper">
+                              <div class="column-wrapper">
+                                <div class="column"></div>
+                              </div>
+                              <div id="percent" class="percentage">{num_percent}</div>
+                              <div class="value">Atraso Envio</div>
+                            </div>
+                                ''')
             with col2:
                 st.markdown('Reclamação')
                 st.plotly_chart(fig2, use_container_width=True)
@@ -262,6 +280,7 @@ def dashboard():
             with c6:
                 carValorDevolucao = 'R$ ' + locale.format_string('%.2f', filtered['vlr_Devolucao'].sum(), grouping=True)
                 st.metric(label='Valor Devolução', value=carValorDevolucao)
+
             with st.container():
                 c1, c2, c3, c4 = st.columns(4)
                 with c1:
@@ -270,6 +289,8 @@ def dashboard():
                 with c2:
                     cardConversaoVenda = '{:.2%}'.format(
                         filtered['id_Pedido'].count() / dfVisita['num_TotalVisita'].sum())
+                    if filtered['id_Pedido'].count() == 0 or dfVisita['num_TotalVisita'].sum() :
+                        cardConversaoVenda = 0
                     st.metric(label='Conversão Vendas', value=cardConversaoVenda)
                 with c3:
                     try:

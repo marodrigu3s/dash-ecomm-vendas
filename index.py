@@ -15,14 +15,6 @@ st.markdown(f"""<div markdown="1" style='text-align: center;'>
 
 Seja bem-vindo ao nosso portal de dashboards, onde você terá acesso a informações e análises detalhadas para tomar decisões estratégicas de forma rápida e eficiente.
 
-## O que você encontrará aqui:
-
-**Dashboards Interativos:** Explore nossos dashboards interativos que oferecem insights em tempo real sobre os principais indicadores de negócio.
-
-**Visualizações Personalizadas:** Personalize suas visualizações de dados de acordo com suas necessidades específicas usando filtros e opções de personalização avançadas.
-
-**Análises Profundas:** Aprofunde-se nos dados com análises detalhadas, gráficos intuitivos e relatórios personalizados que ajudam na compreensão do desempenho da sua empresa.
-
 ## Como usar:
 
 **Explorar Dashboards:** Clique nos diferentes painéis de dashboards para visualizar métricas importantes de vendas, marketing, financeiro e mais.

@@ -1,13 +1,394 @@
-.element-container.st-emotion-cache-ycge2a.e1f1d6gn4 {
-    background-color: #F63366;
+
+/* MANTEM O MENU LATERAL OCULTO */
+[data-testid="collapsedControl"] {
+        display: none;
+}
+
+/* ALINHA TODOS OS CARDS PARA FICAREM CENTRALIZADOS */
+[data-testid="stMetric"] {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+}
+
+/* Bloco 1 - valor pedidos, valor pedidods dia e ticket médio */
+.st-emotion-cache-1r6slb0.e1f1d6gn3
+.st-emotion-cache-0.e1f1d6gn0
+.st-emotion-cache-1wmy9hl.e1f1d6gn1
+.st-emotion-cache-1788y8l.e1f1d6gn2
+.element-container.st-emotion-cache-ycge2a.e1f1d6gn4
+[data-testid="stMetric"]
+.st-emotion-cache-1xarl3l.e1i5pmia1
+.st-emotion-cache-1wivap2.e1i5pmia3 {
+    color: white;
+ }
+
+.st-emotion-cache-1r6slb0.e1f1d6gn3
+.st-emotion-cache-0.e1f1d6gn0
+.st-emotion-cache-1wmy9hl.e1f1d6gn1
+.st-emotion-cache-1788y8l.e1f1d6gn2
+.element-container.st-emotion-cache-ycge2a.e1f1d6gn4
+[data-testid="stMetric"]
+.st-emotion-cache-3wz0tu.e1i5pmia2
+.st-emotion-cache-1wivap2.e1i5pmia3
+.st-emotion-cache-12l3ez5.e1nzilvr4 p {
+    color: white;
+}
+
+.st-emotion-cache-1r6slb0.e1f1d6gn3
+.st-emotion-cache-0.e1f1d6gn0
+.st-emotion-cache-1wmy9hl.e1f1d6gn1
+.st-emotion-cache-1788y8l.e1f1d6gn2
+.element-container.st-emotion-cache-ycge2a.e1f1d6gn4
+[data-testid="stMetric"] {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #262730;
+    border-radius: 5px;
+}
+
+.st-emotion-cache-1r6slb0.e1f1d6gn3
+.st-emotion-cache-0.e1f1d6gn0
+.st-emotion-cache-1wmy9hl.e1f1d6gn1
+.st-emotion-cache-1788y8l.e1f1d6gn2
+.element-container.st-emotion-cache-ycge2a.e1f1d6gn4
+[data-testid="stMetric"]:hover {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #262730;
+    border-radius: 5px;
+    transform: scale(110%);
+}
+
+/* Bloco 2 - Lateral: Pedidos do dia, Aguardando Envio e Atrasados */
+.st-emotion-cache-12w0qpk.e1f1d6gn3
+.st-emotion-cache-0.e1f1d6gn0
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-115ja5m
+.st-emotion-cache-1bxtt2s
+[data-testid="stMetric"]
+.st-emotion-cache-1xarl3l
+.st-emotion-cache-1wivap2 {
+    color: white;
+}
+
+.st-emotion-cache-12w0qpk.e1f1d6gn3
+.st-emotion-cache-0.e1f1d6gn0
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-115ja5m
+.st-emotion-cache-1bxtt2s
+[data-testid="stMetric"]
+.st-emotion-cache-3wz0tu.e1i5pmia2
+.st-emotion-cache-1wivap2.e1i5pmia3
+.st-emotion-cache-12l3ez5.e1nzilvr4 p {
+    color: #262730;
+}
+
+.st-emotion-cache-12w0qpk.e1f1d6gn3
+.st-emotion-cache-0.e1f1d6gn0
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-115ja5m
+.st-emotion-cache-1bxtt2s
+[data-testid="stMetric"] {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #ff9933;
+    border-radius: 5px;
+}
+
+.st-emotion-cache-12w0qpk.e1f1d6gn3
+.st-emotion-cache-0.e1f1d6gn0
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-115ja5m
+.st-emotion-cache-1bxtt2s
+[data-testid="stMetric"]:hover {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #ff9933;
+    border-radius: 5px;
+    transform: scale(110%);
+}
+
+
+/* Bloco 3 - TABELA */
+
+
+/* Bloco 4 - GRAFICO GAUGE DE METRICAS */
+.st-emotion-cache-1l269bu /* e1f1d6gn3*/
+.st-emotion-cache-0 /* e1f1d6gn0*/
+.st-emotion-cache-1wmy9hl /*e1f1d6gn1*/
+.st-emotion-cache-hymab /*e1f1d6gn2*/
+.st-emotion-cache-1w4kowf /*e1f1d6gn4*/
+[data-testid="stMarkdown"]
+.st-emotion-cache-35qgtp p {
+    color: #262730;
+}
+
+.st-emotion-cache-1l269bu /* e1f1d6gn3*/
+.st-emotion-cache-0 /* e1f1d6gn0*/
+.st-emotion-cache-1wmy9hl /*e1f1d6gn1*/
+.st-emotion-cache-hymab /*e1f1d6gn2*/
+.st-emotion-cache-1w4kowf /*e1f1d6gn4*/
+[data-testid="stMarkdown"] div p {
+    text-size: 12px;
+}
+
+.st-emotion-cache-1l269bu /* e1f1d6gn3*/
+.st-emotion-cache-0 /* e1f1d6gn0*/
+.st-emotion-cache-1wmy9hl /*e1f1d6gn1*/
+.st-emotion-cache-hymab {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+}
+
+
+/* Bloco 5 - Lateral: Pedidos do dia, Aguardando Envio e Atrasados */
+.st-emotion-cache-1l269bu
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-hymab
+.st-emotion-cache-1w4kowf
+[data-testid="stMetric"]
+.st-emotion-cache-1xarl3l
+.st-emotion-cache-1wivap2 {
+    color: white;
+}
+
+.st-emotion-cache-1l269bu
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-hymab
+.st-emotion-cache-1w4kowf
+[data-testid="stMetric"]
+.st-emotion-cache-1xarl3l.e1i5pmia1 div {
+    font-size: 16px;
+}
+
+.st-emotion-cache-1l269bu
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-hymab
+.st-emotion-cache-1w4kowf
+[data-testid="stMetric"]
+.st-emotion-cache-3wz0tu.e1i5pmia2
+.st-emotion-cache-1wivap2.e1i5pmia3
+.st-emotion-cache-12l3ez5.e1nzilvr4 p {
+    color: white;
+}
+
+.st-emotion-cache-1l269bu
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-hymab
+.st-emotion-cache-1w4kowf
+[data-testid="stMetric"]
+.st-emotion-cache-3wz0tu.e1i5pmia2
+.st-emotion-cache-12l3ez5.e1nzilvr4 p {
+    font-size: 12px;
+}
+
+.st-emotion-cache-1l269bu
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-hymab
+.st-emotion-cache-1w4kowf
+[data-testid="stMetric"] {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #262730;
+    border-radius: 5px;
+}
+
+.st-emotion-cache-1l269bu
+.st-emotion-cache-1wmy9hl
+.st-emotion-cache-hymab
+.st-emotion-cache-1w4kowf
+[data-testid="stMetric"]:hover {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #262730;
+    border-radius: 5px;
+    transform: scale(110%);
+}
+
+
+
+
+
+/* Bloco 6 - Visitas, conversao de vendas, msg pós vendas e aguardando resposta */
+.st-emotion-cache-13izhro
+.st-emotion-cache-1cvm2sr
+[data-testid="stMetric"]
+.st-emotion-cache-1xarl3l
+.st-emotion-cache-1wivap2 {
+    color: white;
+}
+
+.st-emotion-cache-13izhro
+.st-emotion-cache-1cvm2sr
+[data-testid="stMetric"]
+.st-emotion-cache-1xarl3l.e1i5pmia1 div {
+    font-size: 25px;
+}
+
+.st-emotion-cache-13izhro
+.st-emotion-cache-1cvm2sr
+[data-testid="stMetric"]
+.st-emotion-cache-3wz0tu.e1i5pmia2
+.st-emotion-cache-1wivap2 p {
+    color: white;
+}
+
+.st-emotion-cache-13izhro
+.st-emotion-cache-1cvm2sr
+[data-testid="stMetric"]
+.st-emotion-cache-3wz0tu.e1i5pmia2
+.st-emotion-cache-12l3ez5.e1nzilvr4 p {
+    font-size: 12px;
+}
+
+.st-emotion-cache-13izhro
+.st-emotion-cache-1cvm2sr
+[data-testid="stMetric"] {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #262730;
+    border-radius: 5px;
+}
+
+.st-emotion-cache-13izhro
+.st-emotion-cache-1cvm2sr
+[data-testid="stMetric"]:hover {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #262730;
+    border-radius: 5px;
+    transform: scale(110%);
+}
+
+
+
+
+.outer-wrapper{
+  display: inline-block;
+  margin: 5px 15px;
+  padding: 25px 15px;
+  background: #eee;
+  min-width: 50px;
+}
+
+.column-wrapper{
+  height: 100px;
+  width: 100px;
+  background: #CFD8DC;
+  transform: rotate(180deg);
+  margin: 0 auto;
+}
+
+.column{
+  //position: rela tive;
+  //display: block;
+  //bottom: 0;
+  width: 20px;
+  height: 0%;
+  background: #90A4AE;
+  //transfrom: -moz-translateY(-10px);
+}
+
+.percentage, .value{
+  margin-top: 10px;
+  padding: 5px 10px;
+  color: #FFF;
+  background: #263238;
+  position: relative;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.value{
+  background: #7986CB;
+}
+
+
+
+/*
+
+.element-container.st-emotion-cache-1bxtt2s.e1f1d6gn4 {
+    background-color: #ff9933;
     color: #ffffff;
     border-radius: 5px;
-    padding: 0px;
-    border-radius: 5px;
-    text-align: center;
     text-color: #ffffff;
 }
 
-[data-testid="collapsedControl"] {
-        display: none
-    }
+
+
+[data-testid="stMetric"]:hover  {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    background-color: #262730;
+    transform: scale(110%);
+    border-radius: 5px;
+}
+*/
+
+/*.element-container.st-emotion-cache-ycge2a.e1f1d6gn4 */
+
+/*
+.st-emotion-cache-1r6slb0 {
+    background-color: #262730;
+    color: #ffffff;
+    border-radius: 5px;
+    font-size: 10px;
+
+
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 5px 0 5px 0;
+}
+.st-emotion-cache-1r6slb0 div {
+    font-size: 30px;
+}
+
+.st-emotion-cache-1jmvea6.e1nzilvr4 {
+    color: #ffffff;
+}
+
+.element-container.st-emotion-cache-1bxtt2s.e1f1d6gn4 {
+    background-color: #ff9933;
+    color: #ffffff;
+    border-radius: 5px;
+    text-color: #ffffff;
+}
+.st-emotion-cache-115ja5m.e1f1d6gn2 div {
+    font-size: 30px;
+}
+
+.element-container.st-emotion-cache-1w4kowf.e1f1d6gn4 {
+    background-color: #262730;
+    color: #ffffff;
+    border-radius: 5px;
+    text-color: #ffffff;
+}
+.st-emotion-cache-1l269bu.e1f1d6gn3 div {
+    font-size: 15px;
+}
+
+
+.element-container.st-emotion-cache-1cvm2sr.e1f1d6gn4 {
+    background-color: #262730;
+    color: #ffffff;
+    border-radius: 5px;
+    text-color: #ffffff;
+}
+
+.st-emotion-cache-13izhro.e1f1d6gn2 div {
+    font-size: 15px;
+}
+*/

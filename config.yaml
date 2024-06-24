@@ -3,7 +3,7 @@ credentials:
     joaocampos:
       email: joaocampos@teste.com
       logged_in: False
-      name: Joao Campos
+      name: João Campos
       password: joaocampos
     eduardosantos:
       email: eduardosantos@teste.com
