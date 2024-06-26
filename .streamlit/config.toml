@@ -2,3 +2,6 @@
 base="light"
 primaryColor="#ff9933"
 textColor="#262730"
+
+[server]
+port="8501"

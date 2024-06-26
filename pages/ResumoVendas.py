@@ -4,27 +4,12 @@ from dataset import df, dfMetrica, dfMetricaTempoResp, dfVisita, dfPosVenda, dfP
 from utils import locale
 import plotly.express as px
 import plotly.graph_objects as go
-from streamlit.components.v1 import html
+import streamlit.components.v1 as components
 from streamlit_card import card
 import yaml
 from yaml import SafeLoader
 import streamlit_authenticator as stauth
 import toml
-
-#with open('style.css') as f:
-#    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
-#with open('./config.yaml') as file:
-#    config = yaml.load(file, Loader=SafeLoader)
-#authenticator = stauth.Authenticate(
-#    config['credentials'],
-#    config['cookie']['name'],
-#    config['cookie']['key'],
-#    config['cookie']['expiry_days'],
-#)
-
-
-
 
 def dashboard():
     # st.title('Página Inicial')
@@ -94,10 +79,13 @@ def dashboard():
 
         with st.container():
             metricaAtraso = ((dfMetrica['num_NotaAtrasoEnvio'].iloc[0] * 100) - 100) * -1
-            metricaReclamacao = ((dfMetrica['num_NotaReclamacao'] * 100) - 100) * -1
-            metricaCancelamento = ((dfMetrica['num_NotaCancelamento'] * 100) - 100) * -1
+            metricaReclamacao = ((dfMetrica['num_NotaReclamacao'].iloc[0] * 100) - 100) * -1
+            metricaCancelamento = ((dfMetrica['num_NotaCancelamento'].iloc[0] * 100) - 100) * -1
+            metricaComercialStr = f"{dfMetricaTempoResp['num_HoraUtil'].iloc[0] / 60:.2f}"
             metricaComercial = dfMetricaTempoResp['num_HoraUtil'].iloc[0] / 60
+            metricaForaComercialSTR = f"{dfMetricaTempoResp['num_HoraExtra'].iloc[0] / 60:.2f}"
             metricaForaComercial = dfMetricaTempoResp['num_HoraExtra'].iloc[0] / 60
+            metricaFDSSTR = f"{dfMetricaTempoResp['num_HoraFDS'].iloc[0] / 60:.2f}"
             metricaFDS = dfMetricaTempoResp['num_HoraFDS'].iloc[0] / 60
 
             #fig1 = go.Figure(go.Indicator(
@@ -121,143 +109,438 @@ def dashboard():
             #        'bar': {'color': "black"}
             #    }))
             #fig1.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            fig2 = go.Figure(go.Indicator(
-                mode="number+gauge+delta",
-                value=float(metricaReclamacao),
-                # delta={'reference': 50},
-                domain={'x': [0, 1], 'y': [0, 1]},
-                gauge={
-                    'threshold': {
-                        'line': {'color': "black", 'width': 2},
-                        'thickness': 0.75,
-                        'value': float(metricaReclamacao)},
-                    'shape': "bullet",
-                    'axis': {'range': [None, 100]},
-                    'steps': [
-                        {'range': [0, 20], 'color': "#ff4000"},
-                        {'range': [20, 40], 'color': "#ffbf00"},
-                        {'range': [40, 60], 'color': "#ffff00"},
-                        {'range': [60, 80], 'color': "#bfff00"},
-                        {'range': [80, 100], 'color': "#00ff00"}],
-                    'bar': {'color': "black"}
-                }))
-            fig2.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            fig3 = go.Figure(go.Indicator(
-                mode="number+gauge+delta",
-                value=float(metricaCancelamento),
-                # delta={'reference': 50},
-                domain={'x': [0, 1], 'y': [0, 1]},
-                gauge={
-                    'threshold': {
-                        'line': {'color': "black", 'width': 2},
-                        'thickness': 0.75,
-                        'value': float(metricaCancelamento)},
-                    'shape': "bullet",
-                    'axis': {'range': [None, 100]},
-                    'steps': [
-                        {'range': [0, 20], 'color': "#ff4000"},
-                        {'range': [20, 40], 'color': "#ffbf00"},
-                        {'range': [40, 60], 'color': "#ffff00"},
-                        {'range': [60, 80], 'color': "#bfff00"},
-                        {'range': [80, 100], 'color': "#00ff00"}],
-                    'bar': {'color': "black"}
-                }
-            ))
-            fig3.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            fig4 = go.Figure(go.Indicator(
-                mode="number+gauge+delta",
-                value=metricaComercial,
-                # delta={'reference': 50},
-                domain={'x': [0, 1], 'y': [0, 1]},
-                gauge={
-                    'threshold': {
-                        'line': {'color': "black", 'width': 2},
-                        'thickness': 0.75,
-                        'value': metricaComercial},
-                    'shape': "bullet",
-                    'axis': {'range': [None, 100]},
-                    'steps': [
-                        {'range': [0, 20], 'color': "#00ff00"},
-                        {'range': [20, 40], 'color': "#bfff00"},
-                        {'range': [40, 60], 'color': "#ffff00"},
-                        {'range': [60, 80], 'color': "#ffbf00"},
-                        {'range': [80, 100], 'color': "#ff4000"}],
-                    'bar': {'color': "black"}
-                }
-            ))
-            fig4.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            fig5 = go.Figure(go.Indicator(
-                mode="number+gauge+delta",
-                value=metricaForaComercial,
-                # delta={'reference': 50},
-                domain={'x': [0, 1], 'y': [0, 1]},
-                gauge={
-                    'threshold': {
-                        'line': {'color': "black", 'width': 2},
-                        'thickness': 0.75,
-                        'value': metricaForaComercial},
-                    'shape': "bullet",
-                    'axis': {'range': [None, 100]},
-                    'steps': [
-                        {'range': [0, 20], 'color': "#00ff00"},
-                        {'range': [20, 40], 'color': "#bfff00"},
-                        {'range': [40, 60], 'color': "#ffff00"},
-                        {'range': [60, 80], 'color': "#ffbf00"},
-                        {'range': [80, 100], 'color': "#ff4000"}],
-                    'bar': {'color': "black"}
-                }
-            ))
-            fig5.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            fig6 = go.Figure(go.Indicator(
-                mode="number+gauge+delta",
-                value=metricaFDS,
-                # delta={'reference': 50},
-                domain={'x': [0, 1], 'y': [0, 1]},
-                gauge={
-                    'threshold': {
-                        'line': {'color': "black", 'width': 2},
-                        'thickness': 0.75,
-                        'value': metricaFDS},
-                    'shape': "bullet",
-                    'axis': {'range': [None, 100]},
-                    'steps': [
-                        {'range': [0, 20], 'color': "#00ff00"},
-                        {'range': [20, 40], 'color': "#bfff00"},
-                        {'range': [40, 60], 'color': "#ffff00"},
-                        {'range': [60, 80], 'color': "#ffbf00"},
-                        {'range': [80, 100], 'color': "#ff4000"}],
-                    'bar': {'color': "black"}
-                }
-            ))
-            fig6.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
+            #fig2 = go.Figure(go.Indicator(
+            #    mode="number+gauge+delta",
+            #    value=float(metricaReclamacao),
+            #    # delta={'reference': 50},
+            #    domain={'x': [0, 1], 'y': [0, 1]},
+            #    gauge={
+            #        'threshold': {
+            #            'line': {'color': "black", 'width': 2},
+            #            'thickness': 0.75,
+            #            'value': float(metricaReclamacao)},
+            #        'shape': "bullet",
+            #        'axis': {'range': [None, 100]},
+            #        'steps': [
+            #            {'range': [0, 20], 'color': "#ff4000"},
+            #            {'range': [20, 40], 'color': "#ffbf00"},
+            #            {'range': [40, 60], 'color': "#ffff00"},
+            #            {'range': [60, 80], 'color': "#bfff00"},
+            #            {'range': [80, 100], 'color': "#00ff00"}],
+            #        'bar': {'color': "black"}
+            #    }))
+            #fig2.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
+            #fig3 = go.Figure(go.Indicator(
+            #    mode="number+gauge+delta",
+            #    value=float(metricaCancelamento),
+            #    # delta={'reference': 50},
+            #    domain={'x': [0, 1], 'y': [0, 1]},
+            #    gauge={
+            #        'threshold': {
+            #            'line': {'color': "black", 'width': 2},
+            #            'thickness': 0.75,
+            #            'value': float(metricaCancelamento)},
+            #        'shape': "bullet",
+            #        'axis': {'range': [None, 100]},
+            #        'steps': [
+            #            {'range': [0, 20], 'color': "#ff4000"},
+            #            {'range': [20, 40], 'color': "#ffbf00"},
+            #            {'range': [40, 60], 'color': "#ffff00"},
+            #            {'range': [60, 80], 'color': "#bfff00"},
+            #            {'range': [80, 100], 'color': "#00ff00"}],
+            #        'bar': {'color': "black"}
+            #    }
+            #))
+            #fig3.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
+            #fig4 = go.Figure(go.Indicator(
+            #    mode="number+gauge+delta",
+            #    value=metricaComercial,
+            #    # delta={'reference': 50},
+            #    domain={'x': [0, 1], 'y': [0, 1]},
+            #    gauge={
+            #        'threshold': {
+            #            'line': {'color': "black", 'width': 2},
+            #            'thickness': 0.75,
+            #            'value': metricaComercial},
+            #        'shape': "bullet",
+            #        'axis': {'range': [None, 100]},
+            #        'steps': [
+            #            {'range': [0, 20], 'color': "#00ff00"},
+            #            {'range': [20, 40], 'color': "#bfff00"},
+            #            {'range': [40, 60], 'color': "#ffff00"},
+            #            {'range': [60, 80], 'color': "#ffbf00"},
+            #            {'range': [80, 100], 'color': "#ff4000"}],
+            #        'bar': {'color': "black"}
+            #    }
+            #))
+            #fig4.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
+            #fig5 = go.Figure(go.Indicator(
+            #    mode="number+gauge+delta",
+            #    value=metricaForaComercial,
+            #    # delta={'reference': 50},
+            #    domain={'x': [0, 1], 'y': [0, 1]},
+            #    gauge={
+            #        'threshold': {
+            #            'line': {'color': "black", 'width': 2},
+            #            'thickness': 0.75,
+            #            'value': metricaForaComercial},
+            #        'shape': "bullet",
+            #        'axis': {'range': [None, 100]},
+            #        'steps': [
+            #            {'range': [0, 20], 'color': "#00ff00"},
+            #            {'range': [20, 40], 'color': "#bfff00"},
+            #            {'range': [40, 60], 'color': "#ffff00"},
+            #            {'range': [60, 80], 'color': "#ffbf00"},
+            #            {'range': [80, 100], 'color': "#ff4000"}],
+            #        'bar': {'color': "black"}
+            #    }
+            #))
+            #fig5.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
+            #fig6 = go.Figure(go.Indicator(
+            #    mode="number+gauge+delta",
+            #    value=metricaFDS,
+            #    # delta={'reference': 50},
+            #    domain={'x': [0, 1], 'y': [0, 1]},
+            #    gauge={
+            #        'threshold': {
+            #            'line': {'color': "black", 'width': 2},
+            #            'thickness': 0.75,
+            #            'value': metricaFDS},
+            #        'shape': "bullet",
+            #        'axis': {'range': [None, 100]},
+            #        'steps': [
+            #            {'range': [0, 20], 'color': "#00ff00"},
+            #            {'range': [20, 40], 'color': "#bfff00"},
+            #            {'range': [40, 60], 'color': "#ffff00"},
+            #            {'range': [60, 80], 'color': "#ffbf00"},
+            #            {'range': [80, 100], 'color': "#ff4000"}],
+            #        'bar': {'color': "black"}
+            #    }
+            #))
+            #fig6.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
             col1, col2, col3, col4, col5, col6 = st.columns(6)
             with col1:
-                num_percent = f'{metricaAtraso}%'
-                #print(num_percent)
-                st.html(f'''
-                            <div class="outer-wrapper">
-                              <div class="column-wrapper">
-                                <div class="column"></div>
-                              </div>
-                              <div id="percent" class="percentage">{num_percent}</div>
-                              <div class="value">Atraso Envio</div>
-                            </div>
-                                ''')
+                def determine_color(value):
+                    if value >= 80:
+                        return "#31b93c"
+                    elif value >= 60:
+                        return "#baff20"
+                    elif value >= 40:
+                        return "#fff044"
+                    elif value >= 20:
+                        return "#ffb657"
+                    else:
+                        return "#ff605a"
+
+                color_metricaAtraso = determine_color(metricaAtraso)
+
+                # HTML e CSS para a barra de progresso
+                progress_metricaAtraso = f"""
+                    <div class="outer-wrapper">
+                        <div class="column-wrapper">
+                            <div class="column" style="width: {metricaAtraso}%; background: {color_metricaAtraso};"></div>
+                        </div>
+                        <div class="percentage" style="font-size: 11px">Atraso Envio {metricaAtraso}%</div>
+                    </div>
+                    <style>
+                        .outer-wrappers {{
+                            display: inline-block;
+                            margin: 5px 15px;
+                            padding: 25px 15px;
+                            background: #eee;
+                            min-width: 300px;
+                            text-align: center;
+                            
+                        }}
+                        .column-wrapper {{
+                            width: 100%;
+                            height: 20px;
+                            background: #CFD8DC;
+                            margin: 0 auto;
+                            overflow: hidden;
+                            position: relative;
+                        }}
+                        .column {{
+                            height: 20px;
+                            position: absolute;
+                            left: 0;
+                        }}
+                        .percentage {{
+                            margin-top: 10px;
+                            padding: 5px 10px;
+                            color: #FFF;
+                            background: #262730;
+                            position: relative;
+                            border-radius: 4px;
+                            text-align: center;
+                            font-family: sans-serif;
+                        }}
+                    </style>
+                    """
+
+                # Renderizar o HTML no Streamlit
+                st.components.v1.html(progress_metricaAtraso, height=80)
+
             with col2:
-                st.markdown('Reclamação')
-                st.plotly_chart(fig2, use_container_width=True)
+
+                color_metricaReclamacao = determine_color(metricaReclamacao)
+
+                # HTML e CSS para a barra de progresso
+                progress_metricaReclamacao = f"""
+                                    <div class="outer-wrapper">
+                                        <div class="column-wrapper">
+                                            <div class="column" style="width: {metricaReclamacao}%; background: {color_metricaReclamacao};"></div>
+                                        </div>
+                                        <div class="percentage" style="font-size: 11px">Reclamação {metricaReclamacao}%</div>
+                                    </div>
+                                    <style>
+                                        .outer-wrappers {{
+                                            display: inline-block;
+                                            margin: 5px 15px;
+                                            padding: 25px 15px;
+                                            background: #eee;
+                                            min-width: 300px;
+                                            text-align: center;
+
+                                        }}
+                                        .column-wrapper {{
+                                            width: 100%;
+                                            height: 20px;
+                                            background: #CFD8DC;
+                                            margin: 0 auto;
+                                            overflow: hidden;
+                                            position: relative;
+                                        }}
+                                        .column {{
+                                            height: 20px;
+                                            position: absolute;
+                                            left: 0;
+                                        }}
+                                        .percentage {{
+                                            margin-top: 10px;
+                                            padding: 5px 10px;
+                                            color: #FFF;
+                                            background: #262730;
+                                            position: relative;
+                                            border-radius: 4px;
+                                            text-align: center;
+                                            font-family: sans-serif;
+                                        }}
+                                    </style>
+                                    """
+
+                # Renderizar o HTML no Streamlit
+                st.components.v1.html(progress_metricaReclamacao, height=80)
             with col3:
-                st.markdown('Cancelamento')
-                st.plotly_chart(fig3, use_container_width=True)
+
+                color_metricaCancelamento = determine_color(metricaCancelamento)
+
+                # HTML e CSS para a barra de progresso
+                progress_metricaCancelamento = f"""
+                                    <div class="outer-wrapper">
+                                        <div class="column-wrapper">
+                                            <div class="column" style="width: {metricaCancelamento}%; background: {color_metricaCancelamento};"></div>
+                                        </div>
+                                        <div class="percentage" style="font-size: 11px">Cancelamento {metricaCancelamento}%</div>
+                                    </div>
+                                    <style>
+                                        .outer-wrappers {{
+                                            display: inline-block;
+                                            margin: 5px 15px;
+                                            padding: 25px 15px;
+                                            background: #eee;
+                                            min-width: 300px;
+                                            text-align: center;
+                                        }}
+                                        .column-wrapper {{
+                                            width: 100%;
+                                            height: 20px;
+                                            background: #CFD8DC;
+                                            margin: 0 auto;
+                                            overflow: hidden;
+                                            position: relative;
+                                        }}
+                                        .column {{
+                                            height: 20px;
+                                            position: absolute;
+                                            left: 0;
+                                        }}
+                                        .percentage {{
+                                            margin-top: 10px;
+                                            padding: 5px 10px;
+                                            color: #FFF;
+                                            background: #262730;
+                                            position: relative;
+                                            border-radius: 4px;
+                                            text-align: center;
+                                            font-family: sans-serif;
+                                        }}
+                                    </style>
+                                    """
+
+                # Renderizar o HTML no Streamlit
+                st.components.v1.html(progress_metricaCancelamento, height=80)
             with col4:
-                st.markdown('Comercial(9 às 18h)')
-                st.plotly_chart(fig4, use_container_width=True)
+                def determine_color2(value):
+                    if value >= 80:
+                        return "#ff605a"
+                    elif value >= 60:
+                        return "#ffb657"
+                    elif value >= 40:
+                        return "#fff044"
+                    elif value >= 20:
+                        return "#baff20"
+                    else:
+                        return "#31b93c"
+
+                color_metricaComercial = determine_color2(metricaComercial)
+
+                # HTML e CSS para a barra de progresso
+                progress_metricaComercial = f"""
+                                    <div class="outer-wrapper">
+                                        <div class="column-wrapper">
+                                            <div class="column" style="width: {metricaComercial}%; background: {color_metricaComercial};"></div>
+                                        </div>
+                                        <div class="percentage" style="font-size: 11px">Resp. 6h-18h {metricaComercialStr}%</div>
+                                    </div>
+                                    <style>
+                                        .outer-wrappers {{
+                                            display: inline-block;
+                                            margin: 5px 15px;
+                                            padding: 25px 15px;
+                                            background: #eee;
+                                            min-width: 300px;
+                                            text-align: center;
+
+                                        }}
+                                        .column-wrapper {{
+                                            width: 100%;
+                                            height: 20px;
+                                            background: #CFD8DC;
+                                            margin: 0 auto;
+                                            overflow: hidden;
+                                            position: relative;
+                                        }}
+                                        .column {{
+                                            height: 20px;
+                                            position: absolute;
+                                            left: 0;
+                                        }}
+                                        .percentage {{
+                                            margin-top: 10px;
+                                            padding: 5px 10px;
+                                            color: #FFF;
+                                            background: #262730;
+                                            position: relative;
+                                            border-radius: 4px;
+                                            text-align: center;
+                                            font-family: sans-serif;
+                                        }}
+                                    </style>
+                                    """
+
+                # Renderizar o HTML no Streamlit
+                st.components.v1.html(progress_metricaComercial, height=80)
             with col5:
-                st.markdown('Comercial(18 às 00h)')
-                st.plotly_chart(fig5, use_container_width=True)
+
+                color_metricaForaComercial = determine_color2(metricaForaComercial)
+
+                # HTML e CSS para a barra de progresso
+                progress_metricaForaComercial = f"""
+                                    <div class="outer-wrapper">
+                                        <div class="column-wrapper">
+                                            <div class="column" style="width: {metricaForaComercial}%; background: {color_metricaForaComercial};"></div>
+                                        </div>
+                                        <div class="percentage" style="font-size: 11px">Resp. 18h-00h {metricaForaComercialSTR}%</div>
+                                    </div>
+                                    <style>
+                                        .outer-wrappers {{
+                                            display: inline-block;
+                                            margin: 5px 15px;
+                                            padding: 25px 15px;
+                                            background: #eee;
+                                            min-width: 300px;
+                                            text-align: center;
+
+                                        }}
+                                        .column-wrapper {{
+                                            width: 100%;
+                                            height: 20px;
+                                            background: #CFD8DC;
+                                            margin: 0 auto;
+                                            overflow: hidden;
+                                            position: relative;
+                                        }}
+                                        .column {{
+                                            height: 20px;
+                                            position: absolute;
+                                            left: 0;
+                                        }}
+                                        .percentage {{
+                                            margin-top: 10px;
+                                            padding: 5px 10px;
+                                            color: #FFF;
+                                            background: #262730;
+                                            position: relative;
+                                            border-radius: 4px;
+                                            text-align: center;
+                                            font-family: sans-serif;
+                                        }}
+                                    </style>
+                                    """
+
+                # Renderizar o HTML no Streamlit
+                st.components.v1.html(progress_metricaForaComercial, height=80)
             with col6:
-                st.markdown('Sábado e Domingo')
-                st.plotly_chart(fig6, use_container_width=True)
+
+                color_metricaFDS = determine_color2(metricaFDS)
+
+                # HTML e CSS para a barra de progresso
+                progress_metricaFDS = f"""
+                                    <div class="outer-wrapper">
+                                        <div class="column-wrapper">
+                                            <div class="column" style="width: {metricaFDS}%; background: {color_metricaFDS};"></div>
+                                        </div>
+                                        <div class="percentage" style="font-size: 11px">Resp. FDS {metricaFDSSTR}%</div>
+                                    </div>
+                                    <style>
+                                        .outer-wrappers {{
+                                            display: inline-block;
+                                            margin: 5px 15px;
+                                            padding: 25px 15px;
+                                            background: #eee;
+                                            min-width: 300px;
+                                            text-align: center;
+
+                                        }}
+                                        .column-wrapper {{
+                                            width: 100%;
+                                            height: 20px;
+                                            background: #CFD8DC;
+                                            margin: 0 auto;
+                                            overflow: hidden;
+                                            position: relative;
+                                        }}
+                                        .column {{
+                                            height: 20px;
+                                            position: absolute;
+                                            left: 0;
+                                        }}
+                                        .percentage {{
+                                            margin-top: 10px;
+                                            padding: 5px 10px;
+                                            color: #FFF;
+                                            background: #262730;
+                                            position: relative;
+                                            border-radius: 4px;
+                                            text-align: center;
+                                            font-family: sans-serif;
+                                        }}
+                                    </style>
+                                    """
+
+                # Renderizar o HTML no Streamlit
+                st.components.v1.html(progress_metricaFDS, height=80)
         with st.container():
             c1, c2, c3, c4, c5, c6 = st.columns(6)
             with c1:
@@ -306,6 +589,9 @@ def dashboard():
     with aba2:
         st.dataframe(filtered)
 
+    with open('style.css') as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 if __name__ == '__main__':
     dashboard()
+
