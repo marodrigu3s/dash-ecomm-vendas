@@ -4,7 +4,7 @@ import streamlit as st
 from datetime import datetime
 
 sqlOptions = (
-            'DRIVER={ODBC Driver 18 for SQL Server};'
+            'DRIVER={ODBC Driver 17 for SQL Server};'
             'SERVER=75.101.154.23;'
             'DATABASE=amz_renault;'
             'UID=sa;'
@@ -17,7 +17,7 @@ sqlConn = pyodbc.connect(sqlOptions)
 sqlCursor = sqlConn.cursor()
 
 sqlOptionsEstoque = (
-            'DRIVER={ODBC Driver 18 for SQL Server};'
+            'DRIVER={ODBC Driver 17 for SQL Server};'
             'SERVER=75.101.154.23;'
             'DATABASE=dw_mercadolivre;'
             'UID=sa;'
