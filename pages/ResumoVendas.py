@@ -1,19 +1,23 @@
 import streamlit as st
 import pandas as pd
-from dataset import df, dfMetrica, dfMetricaTempoResp, dfVisita, dfPosVenda, dfPergunta, dfTop10
-from utils import locale
+from dataset import df, dfDetalhado, dfMetrica, dfMetricaTempoResp, dfVisita, dfPosVenda, dfPergunta, dfTop10, get_api_data
+# from utils import locale
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit.components.v1 as components
+from streamlit_autorefresh import st_autorefresh
 from streamlit_card import card
 import yaml
 from yaml import SafeLoader
 import streamlit_authenticator as stauth
 import toml
 
+
+
+
 def dashboard():
     # st.title('Página Inicial')
-    #if st.session_state["authentication_status"]:
+    # if st.session_state["authentication_status"]:
     #    col1, col2 = st.columns((6,1))
     #    with col1:
     #        st.write(f'Olá *{st.session_state["name"]}*!')
@@ -21,20 +25,21 @@ def dashboard():
     #        teste = authenticator.logout('Logout', 'main')
     #        if teste:
     #            st.switch_page('pages/Login.py')
-    aba1, aba2 = st.tabs(['Resumo', 'Detalhado'])
+    aba1, aba2, aba3 = st.tabs(['Resumo', 'Detalhado','Estoque'])
 
-    #marcas = st.multiselect(
+    # marcas = st.multiselect(
     #    'Marcas'
     #    ,df['nom_Marca'].unique()
     #    ,df['nom_Marca'].unique()
-    #)
-#
-    #query = '''`nom_Marca` in @marcas'''
-#
-    #filtered = df.query(query)
+    # )
+    #
+    # query = '''`nom_Marca` in @marcas'''
+    #
+    # filtered = df.query(query)
 
     filtered = df
     with aba1:
+        st_autorefresh(interval=600000, limit=None, key="fizzbuzzcounter")
         st.markdown('''
                 ## Resumo de Vendas Ecommerce
                 Dados dos últimos 30 dias.
@@ -46,12 +51,12 @@ def dashboard():
         # Cards
         col_Card1, col_Card2, col_Card3 = st.columns(3)
         with st.container():
-            valorPedido = 'R$ ' + locale.format_string('%.2f', filtered['vlr_TotalPago'].sum(), grouping=True)
-            valorPedidoDia = 'R$ ' + locale.format_string('%.2f', filtered[
-                filtered['dat_Criacao'] == filtered['dat_Criacao'].max()]['vlr_TotalPago'].sum(), grouping=True)
-            valorTicketMedio = 'R$ ' + locale.format_string('%.2f', filtered[
-                filtered['dat_Criacao'] > filtered['dat_Criacao'].max() - pd.Timedelta(days=30)][
-                'vlr_TotalPago'].mean(), grouping=True)
+            valorPedido = f"R$ {filtered['vlr_TotalPago'].sum():,.2f}".replace(',', 'X').replace('.', ',').replace('X',
+                                                                                                                   '.')
+            valorPedidoDia = f"R$ {filtered[filtered['dat_Criacao'] == filtered['dat_Criacao'].max()]['vlr_TotalPago'].sum():,.2f}".replace(
+                ',', 'X').replace('.', ',').replace('X', '.')
+            valorTicketMedio = f"R$ {filtered[filtered['dat_Criacao'] > filtered['dat_Criacao'].max() - pd.Timedelta(days=30)]['vlr_TotalPago'].mean():,.2f}".replace(
+                ',', 'X').replace('.', ',').replace('X', '.')
 
             #
             col_Card1.metric(label='Valor Pedidos', value=valorPedido)
@@ -75,7 +80,7 @@ def dashboard():
 
             with c2:
                 st.write("Top 10 - Vendas Recentes")
-                st.dataframe(dfTop10.style.set_sticky(axis="index"), hide_index=True,)
+                st.dataframe(dfTop10.style.set_sticky(axis="index"), hide_index=True, )
 
         with st.container():
             metricaAtraso = ((dfMetrica['num_NotaAtrasoEnvio'].iloc[0] * 100) - 100) * -1
@@ -88,136 +93,6 @@ def dashboard():
             metricaFDSSTR = f"{dfMetricaTempoResp['num_HoraFDS'].iloc[0] / 60:.2f}"
             metricaFDS = dfMetricaTempoResp['num_HoraFDS'].iloc[0] / 60
 
-            #fig1 = go.Figure(go.Indicator(
-            #    mode="number+gauge+delta",
-            #    value=float(metricaAtraso),
-            #    # delta={'reference': 50},
-            #    domain={'x': [0, 1], 'y': [0, 1]},
-            #    gauge={
-            #        'threshold': {
-            #            'line': {'color': "black", 'width': 2},
-            #            'thickness': 0.75,
-            #            'value': float(metricaAtraso)},
-            #        'shape': "bullet",
-            #        'axis': {'range': [None, 100]},
-            #        'steps': [
-            #            {'range': [0, 20], 'color': "#ff4000"},
-            #            {'range': [20, 40], 'color': "#ffbf00"},
-            #            {'range': [40, 60], 'color': "#ffff00"},
-            #            {'range': [60, 80], 'color': "#bfff00"},
-            #            {'range': [80, 100], 'color': "#00ff00"}],
-            #        'bar': {'color': "black"}
-            #    }))
-            #fig1.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            #fig2 = go.Figure(go.Indicator(
-            #    mode="number+gauge+delta",
-            #    value=float(metricaReclamacao),
-            #    # delta={'reference': 50},
-            #    domain={'x': [0, 1], 'y': [0, 1]},
-            #    gauge={
-            #        'threshold': {
-            #            'line': {'color': "black", 'width': 2},
-            #            'thickness': 0.75,
-            #            'value': float(metricaReclamacao)},
-            #        'shape': "bullet",
-            #        'axis': {'range': [None, 100]},
-            #        'steps': [
-            #            {'range': [0, 20], 'color': "#ff4000"},
-            #            {'range': [20, 40], 'color': "#ffbf00"},
-            #            {'range': [40, 60], 'color': "#ffff00"},
-            #            {'range': [60, 80], 'color': "#bfff00"},
-            #            {'range': [80, 100], 'color': "#00ff00"}],
-            #        'bar': {'color': "black"}
-            #    }))
-            #fig2.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            #fig3 = go.Figure(go.Indicator(
-            #    mode="number+gauge+delta",
-            #    value=float(metricaCancelamento),
-            #    # delta={'reference': 50},
-            #    domain={'x': [0, 1], 'y': [0, 1]},
-            #    gauge={
-            #        'threshold': {
-            #            'line': {'color': "black", 'width': 2},
-            #            'thickness': 0.75,
-            #            'value': float(metricaCancelamento)},
-            #        'shape': "bullet",
-            #        'axis': {'range': [None, 100]},
-            #        'steps': [
-            #            {'range': [0, 20], 'color': "#ff4000"},
-            #            {'range': [20, 40], 'color': "#ffbf00"},
-            #            {'range': [40, 60], 'color': "#ffff00"},
-            #            {'range': [60, 80], 'color': "#bfff00"},
-            #            {'range': [80, 100], 'color': "#00ff00"}],
-            #        'bar': {'color': "black"}
-            #    }
-            #))
-            #fig3.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            #fig4 = go.Figure(go.Indicator(
-            #    mode="number+gauge+delta",
-            #    value=metricaComercial,
-            #    # delta={'reference': 50},
-            #    domain={'x': [0, 1], 'y': [0, 1]},
-            #    gauge={
-            #        'threshold': {
-            #            'line': {'color': "black", 'width': 2},
-            #            'thickness': 0.75,
-            #            'value': metricaComercial},
-            #        'shape': "bullet",
-            #        'axis': {'range': [None, 100]},
-            #        'steps': [
-            #            {'range': [0, 20], 'color': "#00ff00"},
-            #            {'range': [20, 40], 'color': "#bfff00"},
-            #            {'range': [40, 60], 'color': "#ffff00"},
-            #            {'range': [60, 80], 'color': "#ffbf00"},
-            #            {'range': [80, 100], 'color': "#ff4000"}],
-            #        'bar': {'color': "black"}
-            #    }
-            #))
-            #fig4.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            #fig5 = go.Figure(go.Indicator(
-            #    mode="number+gauge+delta",
-            #    value=metricaForaComercial,
-            #    # delta={'reference': 50},
-            #    domain={'x': [0, 1], 'y': [0, 1]},
-            #    gauge={
-            #        'threshold': {
-            #            'line': {'color': "black", 'width': 2},
-            #            'thickness': 0.75,
-            #            'value': metricaForaComercial},
-            #        'shape': "bullet",
-            #        'axis': {'range': [None, 100]},
-            #        'steps': [
-            #            {'range': [0, 20], 'color': "#00ff00"},
-            #            {'range': [20, 40], 'color': "#bfff00"},
-            #            {'range': [40, 60], 'color': "#ffff00"},
-            #            {'range': [60, 80], 'color': "#ffbf00"},
-            #            {'range': [80, 100], 'color': "#ff4000"}],
-            #        'bar': {'color': "black"}
-            #    }
-            #))
-            #fig5.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
-            #fig6 = go.Figure(go.Indicator(
-            #    mode="number+gauge+delta",
-            #    value=metricaFDS,
-            #    # delta={'reference': 50},
-            #    domain={'x': [0, 1], 'y': [0, 1]},
-            #    gauge={
-            #        'threshold': {
-            #            'line': {'color': "black", 'width': 2},
-            #            'thickness': 0.75,
-            #            'value': metricaFDS},
-            #        'shape': "bullet",
-            #        'axis': {'range': [None, 100]},
-            #        'steps': [
-            #            {'range': [0, 20], 'color': "#00ff00"},
-            #            {'range': [20, 40], 'color': "#bfff00"},
-            #            {'range': [40, 60], 'color': "#ffff00"},
-            #            {'range': [60, 80], 'color': "#ffbf00"},
-            #            {'range': [80, 100], 'color': "#ff4000"}],
-            #        'bar': {'color': "black"}
-            #    }
-            #))
-            #fig6.update_layout(height=30, margin={'t': 0, 'b': 0, 'l': 0})
             col1, col2, col3, col4, col5, col6 = st.columns(6)
             with col1:
                 def determine_color(value):
@@ -250,7 +125,7 @@ def dashboard():
                             background: #eee;
                             min-width: 300px;
                             text-align: center;
-                            
+
                         }}
                         .column-wrapper {{
                             width: 100%;
@@ -544,35 +419,42 @@ def dashboard():
         with st.container():
             c1, c2, c3, c4, c5, c6 = st.columns(6)
             with c1:
-                cardValorComissao = 'R$ ' + locale.format_string('%.2f', filtered['vlr_Comissao'].sum(), grouping=True)
+                cardValorComissao = f"R$ {filtered['vlr_Comissao'].sum():,.2f}".replace(',', 'X').replace('.',
+                                                                                                          ',').replace(
+                    'X', '.')
                 st.metric(label='Valor Comissão', value=cardValorComissao)
             with c2:
-                cardValorImpostos = 'R$ ' + locale.format_string('%.2f', 0,
-                                                                 grouping=True)  # filtered['vlr_Comissao'].sum()
+                cardValorImpostos = f"R$ {filtered['vlr_Impostos'].sum():,.2f}".replace(',', 'X').replace('.',
+                                                                                                          ',').replace(
+                    'X', '.')  # filtered['vlr_Comissao'].sum()
                 st.metric(label='Valor Impostos', value=cardValorImpostos)
             with c3:
                 cardPercentualaMargem = filtered['perc_MargemVenda'].mean()
                 cardPercentualaMargem = '{:.2%}'.format(cardPercentualaMargem * 100)
                 st.metric(label='% Margem', value=cardPercentualaMargem)
             with c4:
-                cardValorFrete = 'R$ ' + locale.format_string('%.2f', filtered['vlr_FreteFinal'].sum(), grouping=True)
+                cardValorFrete = f"R$ {filtered['vlr_FreteFinal'].sum():,.2f}".replace(',', 'X').replace('.',
+                                                                                                         ',').replace(
+                    'X', '.')
                 st.metric(label='Valor Frete', value=cardValorFrete)
             with c5:
                 cardQuantidadeDevolucao = '{:,}'.format(filtered['id_Mediacao'].nunique())
-                st.metric(label='Qtd Devolução', value=cardQuantidadeDevolucao)
+                st.metric(label='Qtd Devolução', value=cardQuantidadeDevolucao.replace(',', '.'))
             with c6:
-                carValorDevolucao = 'R$ ' + locale.format_string('%.2f', filtered['vlr_Devolucao'].sum(), grouping=True)
+                carValorDevolucao = f"R$ {filtered['vlr_Devolucao'].sum():,.2f}".replace(',', 'X').replace('.',
+                                                                                                           ',').replace(
+                    'X', '.')
                 st.metric(label='Valor Devolução', value=carValorDevolucao)
 
             with st.container():
                 c1, c2, c3, c4 = st.columns(4)
                 with c1:
                     cardTotalVisita = '{:,}'.format(dfVisita['num_TotalVisita'].sum())
-                    st.metric(label='Total Visitas', value=cardTotalVisita)
+                    st.metric(label='Total Visitas', value=cardTotalVisita.replace(',', '.'))
                 with c2:
                     cardConversaoVenda = '{:.2%}'.format(
                         filtered['id_Pedido'].count() / dfVisita['num_TotalVisita'].sum())
-                    if filtered['id_Pedido'].count() == 0 or dfVisita['num_TotalVisita'].sum() :
+                    if filtered['id_Pedido'].count() == 0 or dfVisita['num_TotalVisita'].sum():
                         cardConversaoVenda = 0
                     st.metric(label='Conversão Vendas', value=cardConversaoVenda)
                 with c3:
@@ -580,18 +462,204 @@ def dashboard():
                         cardPosVenda = '{:,}'.format(dfPosVenda['qtd_MSG'].sum())
                     except:
                         cardPosVenda = 0
-                    st.metric(label='Msg Pós Vendas', value=cardPosVenda)
+                    st.metric(label='Msg Pós Vendas', value=cardPosVenda.replace(',', '.'))
                 with c4:
-                    cardAguardandoResp = '{:,}'.format(
-                        dfPergunta[dfPergunta['nom_Status'] == 'UNANSWERED']['id_Vendedor'].count())
+                    cardAguardandoResp = f"{dfPergunta[dfPergunta['nom_Status'] == 'UNANSWERED']['id_Vendedor'].count():,}".replace(
+                        ',', '.')
                     st.metric(label='Aguardando Resp.', value=cardAguardandoResp)
 
     with aba2:
-        st.dataframe(filtered)
+        st.markdown('''
+                                ## Detalhado de Vendas Ecommerce
+                                ''')
+        filtro1, filtro2, filtro3 = st.columns(3)
+        with filtro1:
+            with st.expander('Data de Venda'):
+                data_venda = st.date_input(
+                    'Selecione a Data'
+                    , (dfDetalhado['Data'].min()
+                       , dfDetalhado['Data'].max())
+                )
+
+        with filtro2:
+            with st.expander('Pedido'):
+                # pedido = st.container(height=300).multiselect(
+                #    'Selecione o Número do Pedido'
+                #    ,dfDetalhado['Pedido'].unique()
+                #    ,dfDetalhado['Pedido'].unique()
+                # )
+
+                all_options = dfDetalhado['Pedido'].tolist()
+
+                selected_all = st.container(height=200).multiselect(
+                    'Selecione o Pedido'
+                    , all_options
+                    , all_options
+                    , key="selected_all"
+                    , placeholder='Selecione o Pedido'
+                )
+
+                def _select_all():
+                    st.session_state.selected_all = all_options
+
+                st.button("Todos Pedidos", on_click=_select_all)
+
+                selected_all
+
+        with filtro3:
+            with st.expander('Tipo Venda'):
+                tipovenda = st.multiselect(
+                    'Selecione o Tipo de Venda'
+                    , dfDetalhado['Tipo Venda'].unique()
+                    , dfDetalhado['Tipo Venda'].unique()
+                )
+
+        query = '''
+                    `Data` >= @data_venda[0] and `Data` <= @data_venda[1] \
+                    and `Pedido` in @selected_all \
+                    and `Tipo Venda` in @tipovenda \
+                '''
+
+        filtro_dados = dfDetalhado.query(query)
+
+        st.dataframe(filtro_dados, hide_index=True)
+
+        card1, card2, card3, card4, card5, card6 = st.columns(6)
+        with card1:
+            v_TotalPedido = '{:,}'.format(filtro_dados['Pedido'].nunique())
+            st.metric(label='Total Pedidos', value=v_TotalPedido.replace(',', '.'))
+        with card2:
+            v_ValorPedido = f"R$ {filtro_dados['Venda'].sum():,.2f}"
+            st.metric(label='Valor Pedidos', value=v_ValorPedido.replace(',', 'X').replace('.', ',').replace('X', '.'))
+        with card3:
+            v_TicketMedio = f"R$ {filtro_dados['Venda'].mean():,.2f}"
+            st.metric(label='Tiket Médio', value=v_TicketMedio.replace(',', 'X').replace('.', ',').replace('X', '.'))
+        with card4:
+            v_ComissaoML = f"R$ {filtro_dados['Comissão'].sum():,.2f}"
+            st.metric(label='Comissão ML', value=v_ComissaoML.replace(',', 'X').replace('.', ',').replace('X', '.'))
+        with card5:
+            v_Impostos = f"R$ {filtro_dados['Impostos'].sum():,.2f}"
+            st.metric(label='Valor Impostos', value=v_Impostos.replace(',', 'X').replace('.', ',').replace('X', '.'))
+        with card6:
+            v_Frete = f"R$ {filtro_dados['Frete'].sum():,.2f}"
+            st.metric(label='Valor Frete', value=v_Frete.replace(',', 'X').replace('.', ',').replace('X', '.'))
+
+
+    with aba3:
+        st.header('Estoque de Peças')
+        dfEstoque = get_api_data()
+
+        filtro1, filtro2, filtro3 = st.columns(3)
+        filtro4, filtro5, filtro6 = st.columns(3)
+        with filtro1:
+            with st.expander('Status'):
+                e_status = st.multiselect(
+                    'Selecione o Status'
+                    , dfEstoque['Status'].unique()
+                    , dfEstoque['Status'].unique()
+                    , key='e_status'
+                )
+
+        with filtro2:
+            with st.expander('Matriz'):
+                all_options_matriz = dfEstoque['Cod. Matriz'].tolist()
+
+                e_matriz_selected_all = st.container(height=200).multiselect(
+                    'Selecione a Matriz'
+                    , all_options_matriz
+                    , all_options_matriz
+                    , key="e_matriz_selected_all"
+                    , placeholder='Selecione a Matriz'
+                )
+
+                def _select_all_matriz():
+                    st.session_state.matriz_selected_all = all_options_matriz
+
+                st.button("Todas Matrizes", on_click=_select_all_matriz)
+
+                e_matriz_selected_all
+
+        with filtro3:
+            with st.expander('Empresa'):
+                all_options_empresa = dfEstoque['Cod. Empresa'].tolist()
+
+                e_empresa_selected_all = st.container(height=200).multiselect(
+                    'Selecione a Empresa'
+                    , all_options_empresa
+                    , all_options_empresa
+                    , key="e_empresa_selected_all"
+                    , placeholder='Selecione a Empresa'
+                )
+
+                def _select_all_empresa():
+                    st.session_state.e_empresa_selected_all = all_options_empresa
+
+                st.button("Todas Empresas", on_click=_select_all_empresa)
+
+                e_empresa_selected_all
+
+        with filtro4:
+            with st.expander('Marca'):
+                all_options_marca = dfEstoque['Fornecedor'].tolist()
+
+                e_marca_selected_all = st.container(height=200).multiselect(
+                    'Selecione a Marca'
+                    , all_options_marca
+                    , all_options_marca
+                    , key="e_marca_selected_all"
+                    , placeholder='Selecione a Marca'
+                )
+
+                def _select_all_marca():
+                    st.session_state.e_marca_selected_all = all_options_marca
+
+                st.button("Todas Marcas", on_click=_select_all_marca)
+
+                e_marca_selected_all
+
+        with filtro5:
+            with st.expander('SKU'):
+                all_options_sku = dfEstoque['SKU'].tolist()
+
+                e_sku_selected_all = st.container(height=200).multiselect(
+                    'Selecione o SKU'
+                    , all_options_sku
+                    , all_options_sku
+                    , key="e_sku_selected_all"
+                    , placeholder='Selecione o SKU'
+                )
+
+                def _select_all_sku():
+                    st.session_state.e_sku_selected_all = all_options_sku
+
+                st.button("Todos SKUs", on_click=_select_all_sku)
+
+                e_sku_selected_all
+
+        with filtro6:
+            ""
+        query = '''
+            `Status` in @e_status  \
+            and `SKU` in @e_sku_selected_all \
+            and `Cod. Matriz` in @e_matriz_selected_all \
+            and `Fornecedor` in @e_marca_selected_all \
+            and `Cod. Empresa` in @e_empresa_selected_all \
+            '''
+
+        filtro_estoque = dfEstoque.query(query)
+
+        st.dataframe(filtro_estoque, hide_index=True)
+        st.markdown(f'''
+                    🟢 {filtro_estoque[filtro_estoque['Status'] == '🟢']['Status'].count()} Items \n
+                    🟡 {filtro_estoque[filtro_estoque['Status'] == '🟡']['Status'].count()} Items \n
+                    🟠 {filtro_estoque[filtro_estoque['Status'] == '🟠']['Status'].count()} Items \n
+                    🔴 {filtro_estoque[filtro_estoque['Status'] == '🔴']['Status'].count()} Items \n
+                    ''')
+
 
     with open('style.css') as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-if __name__ == '__main__':
-    dashboard()
+#if __name__ == '__main__':
+#    dashboard()
 

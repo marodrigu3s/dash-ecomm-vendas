@@ -12,16 +12,13 @@ from streamlit_javascript import st_javascript
 st.set_page_config(page_title='Login', layout="centered", initial_sidebar_state="collapsed", menu_items=None)
 
 
-metricaAtraso = ((dfMetrica['num_NotaAtrasoEnvio'].iloc[0] * 100) - 100) * -1
+#metricaAtraso = ((dfMetrica['num_NotaAtrasoEnvio'].iloc[0] * 100) - 100) * -1
 
 #st.set_page_config(
 #            layout="centered"
 #            ,page_title='AMS - Dashboard'
 #            ,initial_sidebar_state="collapsed"
 #        )
-
-
-
 
 
 #st_autorefresh(interval=30000, limit=None, key="fizzbuzzcounter")
@@ -37,7 +34,7 @@ authenticator = stauth.Authenticate(
 )
 
 
-col1,col2,col3 = st.columns((4,4,4))
+col1,col2,col3 = st.columns((2,4,2))
 with col1:
     pass
 with col2:
